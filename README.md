@@ -3,4 +3,6 @@
 
 Dataset: https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud/data
 
+Bigger Dataset: https://www.kaggle.com/datasets/priyamchoksi/credit-card-transactions-dataset
+
 Project Proposal: https://docs.google.com/document/d/1JaazTlWT5xZuYwd4RFvfUpN9GCE4F_0sLG7fsUTD6xw/edit?usp=sharing
