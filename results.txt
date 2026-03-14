@@ -1,0 +1,33 @@
+OLD:
+Accuracy: 0.9945307780013718
+total fraud: 1273
+true positives: 350
+true negatives: 218587
+false positives: 281
+false negatives: 923
+precision: 0.554675118858954
+recall: 0.2749410840534171
+f1: 0.36764705882352944
+% of fraudulent transactions in test set classified incorrectly: 0.725058913230896
+
+10 Categories:
+total fraud: 1273
+true positives: 393
+true negatives: 218555
+false positives: 313
+false negatives: 880
+precision: 0.556657223796034
+recall: 0.3087195600942655
+f1: 0.39717028802425464
+% of fraudulent transactions in test set classified incorrectly: 0.6912804245948792
+
+With 5 categories:
+total fraud: 1273
+true positives: 431
+true negatives: 218528
+false positives: 340
+false negatives: 842
+precision: 0.5590142671854734
+recall: 0.33857030636292224
+f1: 0.4217221135029355
+% of fraudulent transactions in test set classified incorrectly: 0.6614297032356262

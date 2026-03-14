@@ -3,3 +3,6 @@ torch
 pandas
 tqdm
 kagglehub
+nbformat
+python-dotenv
+google-genai
