@@ -36,11 +36,11 @@ Batch Norming does not help
 
 10 Job categories, Imbalanced Dataset Sampler, Cross Entropy Loss:
 total fraud: 1273
-true positives: 1078
-true negatives: 202973
-false positives: 15895
-false negatives: 195
-precision: 0.06351263771872975
-recall: 0.8468185388845247
-f1: 0.1181628850158939
-% of fraudulent transactions in test set classified incorrectly: 0.15318146347999573
+true positives: 1088
+true negatives: 199016
+false positives: 19852
+false negatives: 185
+precision: 0.05195797516714422
+recall: 0.8546739984289081
+f1: 0.09796065367127359
+% of fraudulent transactions in test set classified incorrectly: 0.14532600343227386
