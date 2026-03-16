@@ -66,3 +66,36 @@ precision: 0.13842731911553055
 recall: 0.8311076197957581
 f1: 0.237326155226559
 % of fraudulent transactions in test set classified incorrectly: 0.16889238357543945
+
+More features, 1-hot encoding for categorical variables, removed cc number, no SMOTE, Imbalanced Dataset Sampler, Cross Entropy Loss
+total fraud: 1273
+true positives: 1093
+true negatives: 217529
+false positives: 1339
+false negatives: 180
+precision: 0.44942434210526316
+recall: 0.8586017282010998
+f1: 0.5900134952766533
+% of fraudulent transactions in test set classified incorrectly: 0.14139828085899353
+
+Weighted Cross Entropy Loss, No IDS, all features, no SMOTE
+total fraud: 1273
+true positives: 1185
+true negatives: 209344
+false positives: 9524
+false negatives: 88
+precision: 0.11065458959753478
+recall: 0.9308719560094265
+f1: 0.19779669504256384
+% of fraudulent transactions in test set classified incorrectly: 0.06912804394960403
+
+Weighted Multi Margin Loss, No IDS, all features, no SMOTE
+total fraud: 1273
+true positives: 1184
+true negatives: 209014
+false positives: 9854
+false negatives: 89
+precision: 0.1072658090233738
+recall: 0.9300864100549883
+f1: 0.19234830639265696
+% of fraudulent transactions in test set classified incorrectly: 0.0699135884642601
