@@ -6,3 +6,4 @@ kagglehub
 nbformat
 python-dotenv
 google-genai
+torchsampler
