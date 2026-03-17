@@ -1,11 +1,13 @@
 \documentclass{article}
 \usepackage{graphicx}
-\usepackage{geometry}
+\usepackage[margin=1in]{geometry}
 \usepackage{hyperref}
 \usepackage{setspace}
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
 \usepackage{tikz}
+\usepackage{apacite}
+\bibliographystyle{apacite}
 \usetikzlibrary{positioning,arrows.meta,fit,calc,shadows.blur}
 \doublespacing
 
@@ -19,7 +21,7 @@
 
 \section{Introduction}
 
-We implemented a Binary classifier to tackle the problem of identifying fraudulent credit card transactions. We used a dataset containing 1.3 million different transactions and their associated data. The challenge we faced was a severe class imbalance: fraudulent transactions do not occur as often as legitimate ones. In our dataset, only ~0.58\% of the transactions were fraudulent. We tried several approaches to solve this problem, including minority class oversampling, different weighted loss functions, and various encoding strategies for the categorical features.
+We implemented a Binary classifier to tackle the problem of identifying fraudulent credit card transactions. We used a dataset containing 1.3 million different transactions and their associated data. The challenge we faced was a severe class imbalance: fraudulent transactions do not occur as often as legitimate ones. In our dataset, only 0.58\% of the transactions were fraudulent. We tried several approaches to solve this problem, including minority class oversampling, different weighted loss functions, and various encoding strategies for the categorical features.
 
 \section{Background}
 
@@ -32,12 +34,19 @@ Based on the above track record, we evaluated a deep tabular dataset with featur
 
 \section{Data}
 
-
+Our dataset contains a mix of numerical and categorical features for each transaction, including transaction amount, purchase category, timestamp, etc. In total, it includes about 1.3 million transactions, with a severe class imbalance, where only about 0.58\% are labeled fraudulent (is\_fraud = 1). Numerical fields (e.g. amount, latitude/longitude, city population, Unix time) capture transaction scale and location patterns, while categorical fields (e.g. merchant category, state, gender, cardholder occupation) provide behavioral context. We excluded the credit card number and transaction UUID fields from modeling since they are essentially unique and have no bearing on transaction risk. Instead, we focused on generalizable fraud patterns.
 
 \begin{center}
     \includegraphics*[width=\textwidth]{heatmap.png}
+\end{center}
+
+This heatmap tells us that fraud-risk is highly time-dependent. Rates almost bottom out during daytime/business hours and spike sharply late at night, with the most pronounced spikes around hours 22-23 across nearly all days. This pattern shows late transactions are disproportionately risky, while weekday differences are smaller than the hour-of-day effect.
+
+\begin{center}
     \includegraphics*[width=\textwidth]{volume.png}
 \end{center}
+
+Transaction volume is relatively stable month-to-month with one clear surge around late 2019, while fraud rate fluctuates more sharply across months. This suggests temporal drift in fraud behavior: risk changes over time and is not simply proportional to transaction volume.
 
 \section{Evaluation}
 
@@ -108,14 +117,18 @@ To start, we only took the numerical data from the dataset and used that to trai
         \hline
         \textbf{Metric} & \textbf{Value} & \textbf{Improvement Over Baseline} \\
         \hline \hline
-        Precision & 55.46\% & 0.00\% \\
+        Precision & 55.46\% & - \\
         \hline
-        Recall & 27.49\% & 0.00\% \\
+        Recall & 27.49\% & - \\
         \hline
-        F1 & 36.76\% & 0.00\% \\
+        F1 & 36.76\% & - \\
         \hline
     \end{tabular}
 \end{table*}
+
+\begin{center}
+    \includegraphics*[width=0.75\textwidth]{base.png}
+\end{center}
 
 \subsection{LLM-Defined Job Categories}
 
@@ -127,14 +140,18 @@ The first categorical feature that we wanted to include was the cardholder's job
         \hline
         \textbf{Metric} & \textbf{Value} & \textbf{Improvement Over Baseline} \\
         \hline \hline
-        Precision & \% & 0.00\% \\
+        Precision & 55.66\% & 0.20\% \\
         \hline
-        Recall & \% & 0.00\% \\
+        Recall & 30.87\% & 3.38\% \\
         \hline
-        F1 & \% & 0.00\% \\
+        F1 & 39.71\% & 2.95\% \\
         \hline
     \end{tabular}
 \end{table*}
+
+\begin{center}
+    \includegraphics*[width=0.75\textwidth]{llm.png}
+\end{center}
 
 \subsection{Minority Class Oversampling}
 
@@ -146,14 +163,18 @@ The next approach was to implement minority class oversampling. We implemented t
         \hline
         \textbf{Metric} & \textbf{Value} & \textbf{Improvement Over Baseline} \\
         \hline \hline
-        Precision & \% & 0.00\% \\
+        Precision & 17.45\% & -38.01\% \\
         \hline
-        Recall & \% & 0.00\% \\
+        Recall & 78.94\% & 51.45\% \\
         \hline
-        F1 & \% & 0.00\% \\
+        F1 & 28.58\% & -8.18\% \\
         \hline
     \end{tabular}
 \end{table*}
+
+\begin{center}
+    \includegraphics*[width=0.75\textwidth]{mco.png}
+\end{center}
 
 \subsection{SVMSMOTE}
 
@@ -165,14 +186,18 @@ Similar to the previous technique, we also tried using SVMSMOTE, which actually 
         \hline
         \textbf{Metric} & \textbf{Value} & \textbf{Improvement Over Baseline} \\
         \hline \hline
-        Precision & \% & 0.00\% \\
+        Precision & 13.84\% & -41.62\% \\
         \hline
-        Recall & \% & 0.00\% \\
+        Recall & 83.11\% & 55.62\% \\
         \hline
-        F1 & \% & 0.00\% \\
+        F1 & 23.73\% & -13.03\% \\
         \hline
     \end{tabular}
 \end{table*}
+
+\begin{center}
+    \includegraphics*[width=0.75\textwidth]{smote.png}
+\end{center}
 
 \subsection{One-Hot Encoding}
 
@@ -184,14 +209,18 @@ Our next strategy was to integrate the other categorical features into the input
         \hline
         \textbf{Metric} & \textbf{Value} & \textbf{Improvement Over Baseline} \\
         \hline \hline
-        Precision & \% & 0.00\% \\
+        Precision & 44.94\% & -10.52\% \\
         \hline
-        Recall & \% & 0.00\% \\
+        Recall & 85.86\% & 58.37\% \\
         \hline
-        F1 & \% & 0.00\% \\
+        F1 & 59.00\% & 22.24\% \\
         \hline
     \end{tabular}
 \end{table*}
+
+\begin{center}
+    \includegraphics*[width=0.75\textwidth]{ohe.png}
+\end{center}
 
 \subsection{Weighted MultiMargin Loss}
 
@@ -203,14 +232,18 @@ We now turn our attention to the loss function. Up until now, we used the defaul
         \hline
         \textbf{Metric} & \textbf{Value} & \textbf{Improvement Over Baseline} \\
         \hline \hline
-        Precision & \% & 0.00\% \\
+        Precision & 10.72\% & -44.74\% \\
         \hline
-        Recall & \% & 0.00\% \\
+        Recall & 93.00\% & 65.51\% \\
         \hline
-        F1 & \% & 0.00\% \\
+        F1 & 19.23\% & -17.53\% \\
         \hline
     \end{tabular}
 \end{table*}
+
+\begin{center}
+    \includegraphics*[width=0.75\textwidth]{mml.png}
+\end{center}
 
 \subsection{Weighted CrossEntropy Loss}
 
@@ -222,22 +255,29 @@ Another weighted loss function we used was Cross-Entropy Loss. We used the same 
         \hline
         \textbf{Metric} & \textbf{Value} & \textbf{Improvement Over Baseline} \\
         \hline \hline
-        Precision & \% & 0.00\% \\
+        Precision & 11.06\% & -44.40\% \\
         \hline
-        Recall & \% & 0.00\% \\
+        Recall & 93.09\% & 65.60\% \\
         \hline
-        F1 & \% & 0.00\% \\
+        F1 & 19.77\% & -16.99\% \\
         \hline
     \end{tabular}
 \end{table*}
 
+\begin{center}
+    \includegraphics*[width=0.75\textwidth]{cel.png}
+\end{center}
+
 \section{Outlook}
 
-Earlier in the quarter, we expected that handling the extreme class imbalance problem would be the dominant factor in performance and that oversampling techniques like SMOTE and its variants would provide the largest gains. We also expected adding categorical context/encodings (job, state, merchant\_cat, gender) would help, but initially assumed the performance increase from these would be second to the earlier imbalance methods.
-Our final results only partially matched those expectations. Imbalance-aware methods like weighted loss in combination with feature engineering and encodings made the biggest, most consistent improvements on our evaluation metrics.Oversampling often improved recall but introduced many false positives, hurting precision.
+Earlier in the quarter, we expected that handling the extreme class imbalance problem would be the dominant factor in performance and that oversampling techniques like SMOTE and its variants would provide the largest gains. We also expected adding categorical context/encodings (job, state, merchant category, gender) would help, but initially assumed the performance increase from these would be second to the earlier imbalance methods.
+Our final results only partially matched those expectations. Imbalance-aware methods like weighted loss in combination with feature engineering and encodings made the biggest, most consistent improvements on our evaluation metrics. Oversampling often improved recall but introduced many false positives, hurting precision.
 
-The main lesson is that for fraud detection, accuracy is misleading; precision/recall/F1 and tradeoff-aware evaluation are more meaningful. We also learned that data representation mattered more than making the MLP deeper
+The main lesson is that for fraud detection, accuracy is misleading; precision/recall/F1 and tradeoff-aware evaluation are more meaningful. We also learned that data representation mattered more than making the MLP deeper.
 
 If we continued, we would focus on: (1) threshold tuning and probability calibration, (2) time-based validation to handle concept drift, and (3) comparing against strong tabular baselines (e.g., XGBoost/LightGBM) plus richer temporal/geospatial features. Overall, we met our core goal by building a substantially improved fraud detector and identifying which techniques provide the highest return.
+
+\nocite{*}
+\bibliography{mybib.bib}
 
 \end{document}
