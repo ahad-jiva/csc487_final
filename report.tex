@@ -56,7 +56,7 @@ We first ran a baseline test with a simple model and no fancy data transformatio
 
 Our solution uses a feedforward MLP to classify transactions as either legitimate or fraudulent. The dataset contains a mix of numerical and categorical features for each transaction, including transaction amount, purchase category, timestamp, etc.
 
-\begin{figure}[h]
+\begin{figure}[ht]
 \centering
 \begin{tikzpicture}[
     font=\sffamily,
@@ -111,7 +111,7 @@ Our solution uses a feedforward MLP to classify transactions as either legitimat
 
 To start, we only took the numerical data from the dataset and used that to train the model. We did not use any special techniques to account for the class imbalance; this experiment was to get a baseline performance reading from which we could measure our model's improvement.
 
-\begin{table*}[h]
+\begin{table*}[ht]
     \centering
     \begin{tabular}{|c|c|c|}
         \hline
@@ -134,7 +134,7 @@ To start, we only took the numerical data from the dataset and used that to trai
 
 The first categorical feature that we wanted to include was the cardholder's job; we felt that it would be a significant indicator of the existence of fraud. However, the dataset contained 494 possible values for the job feature, and applying one-hot encoding would have blown up our input vector and encountered the curse of dimensionality. Instead, we chose to feed the job categories into an LLM (specifically Gemini 3 Flash Preview), which analyzed the job categories and condensed them down into 10 broader categories. We then mapped each job to its broader category amongst these ten, and then applied one-hot encoding. With this technique, we improved recall with no effect on precision.
 
-\begin{table*}[h]
+\begin{table*}[ht]
     \centering
     \begin{tabular}{|c|c|c|}
         \hline
@@ -157,7 +157,7 @@ The first categorical feature that we wanted to include was the cardholder's job
 
 The next approach was to implement minority class oversampling. We implemented this by using the ImbalancedDatasetSampler sampler from the torchsampler library and passing it to the train set DataLoader. This forces the DataLoader to pick from the minority class at a higher rate, increasing the chance that the minority class appears in the training data. This had a significant impact on the model's performance.
 
-\begin{table*}[h]
+\begin{table*}[ht]
     \centering
     \begin{tabular}{|c|c|c|}
         \hline
@@ -180,7 +180,7 @@ The next approach was to implement minority class oversampling. We implemented t
 
 Similar to the previous technique, we also tried using SVMSMOTE, which actually generates augmented data from the minority class and adds it to the train set. SVMSMOTE is a variant of SMOTE that uses an SVM algorithm to detect samples to use for generating synthetic samples. Notably, the SVMSMOTE technique did not improve over the baseline model as much as the ImbalancedDatasetSampler did, though the improvement is still significant. SVMSMOTE also took much longer to train, as the data augmentation process is computationally expensive.
 
-\begin{table*}[h]
+\begin{table*}[ht]
     \centering
     \begin{tabular}{|c|c|c|}
         \hline
@@ -203,7 +203,7 @@ Similar to the previous technique, we also tried using SVMSMOTE, which actually 
 
 Our next strategy was to integrate the other categorical features into the input vector. We chose to leave out the credit card numbers and transaction UUID from all experiments, as they would not have provided much insight to the model. One-hot encoding was applied to gender, transaction category, and state. We used the transaction date and the cardholder's date of birth to calculate the age of the person making the transaction. In total, we increased the number of features of our input vector from 11 to 88. This provided the largest increase in model performance yet, outperforming both IDS and SVMSMOTE.
 
-\begin{table*}[h]
+\begin{table*}[ht]
     \centering
     \begin{tabular}{|c|c|c|}
         \hline
@@ -226,7 +226,7 @@ Our next strategy was to integrate the other categorical features into the input
 
 We now turn our attention to the loss function. Up until now, we used the default Cross-Entropy Loss function for training, but this function is blind to class imbalances. Our first experiment was to use a weighted Multi Margin loss function, where the weights were determined by the inverse frequency of the fraud and legitimate classes. Without SVMSMOTE and IDS but with one-hot encoding, this technique gave us the best result so far. Notably, MultiMargin loss does not have an MPS implementation, so training had to be performed on CPU.
 
-\begin{table*}[h]
+\begin{table*}[ht]
     \centering
     \begin{tabular}{|c|c|c|}
         \hline
@@ -249,7 +249,7 @@ We now turn our attention to the loss function. Up until now, we used the defaul
 
 Another weighted loss function we used was Cross-Entropy Loss. We used the same inverse-frequency derived weights as before, but with Cross Entropy instead. The improvement over Multi Margin loss was almost imperceptible, but because of its MPS implementation in torch, training was much faster. This loss function, along with one-hot encoding of categorical variables and the omission of SVMSMOTE and IDS, resulted in the best model performance overall.
 
-\begin{table*}[h]
+\begin{table*}[ht]
     \centering
     \begin{tabular}{|c|c|c|}
         \hline
